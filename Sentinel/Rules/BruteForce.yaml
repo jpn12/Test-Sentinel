@@ -48,6 +48,5 @@ incidentConfiguration:
     reopenClosedIncident: false # reabrir incidente fechado se surgir alerta relacionado
     lookbackDuration: PT5H        # janela de agrupamento (5m, 5h, 1d ou ISO 8601)
     matchingMethod: Selected    # AllEntities | AnyAlert | Selected
-    groupByEntities:            # só vale com matchingMethod: Selected
-      - Account
-      - IP
+    groupByAlertDetails:            # só vale com matchingMethod: Selected
+      - DisplayName
