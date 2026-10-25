@@ -49,4 +49,4 @@ incidentConfiguration:
     lookbackDuration: PT5H        # janela de agrupamento (5m, 5h, 1d ou ISO 8601)
     matchingMethod: Selected    # AllEntities | AnyAlert | Selected
     groupByAlertDetails:            # só vale com matchingMethod: Selected
-      - DisplayName
+      - Severity
