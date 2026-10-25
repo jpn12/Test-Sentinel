@@ -1,0 +1,70 @@
+name: Sentinel Detection as Code
+
+on:
+  pull_request:
+    paths:
+      - "Sentinel/rules/**"
+      - "deploy_sentinel_rules.py"
+      - "requirements.txt"
+  push:
+    branches: [main]
+    paths:
+      - "Sentinel/rules/**"
+      - "deploy_sentinel_rules.py"
+      - "requirements.txt"
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: Validar regras (dry-run)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Validar YAMLs
+        run: python deploy_sentinel_rules.py --rules-dir ./detections --dry-run
+
+  deploy:
+    name: Deploy no Sentinel
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment: production # permite exigir aprovação manual antes do deploy
+    permissions:
+      id-token: write # necessário para o login OIDC
+      contents: read
+    env:
+      SENTINEL_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      SENTINEL_RESOURCE_GROUP: ${{ secrets.SENTINEL_RESOURCE_GROUP }}
+      SENTINEL_WORKSPACE_NAME: ${{ secrets.SENTINEL_WORKSPACE_NAME }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Validar YAMLs
+        run: python deploy_sentinel_rules.py --rules-dir ./detections --dry-run
+
+      - name: Login no Azure (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy das regras
+        run: python deploy_sentinel_rules.py --rules-dir ./detections
