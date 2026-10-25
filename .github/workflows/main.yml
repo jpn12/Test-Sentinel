@@ -3,13 +3,13 @@ name: Sentinel Detection as Code
 on:
   pull_request:
     paths:
-      - "Sentinel/rules/**"
+      - "Sentinel/Rules/**"
       - "Deploy_sentinel.py"
       - "requirements.txt"
   push:
     branches: [main]
     paths:
-      - "Sentinel/rules/**"
+      - "Sentinel/Rules/**"
       - "Deploy_sentinel.py"
       - "requirements.txt"
   workflow_dispatch:
@@ -38,9 +38,9 @@ jobs:
     name: Deploy no Sentinel
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    environment: production # permite exigir aprovação manual antes do deploy
+    environment: production
     permissions:
-      id-token: write # necessário para o login OIDC
+      id-token: write
       contents: read
     env:
       SENTINEL_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
@@ -57,7 +57,7 @@ jobs:
       - run: pip install -r requirements.txt
 
       - name: Validar YAMLs
-        run: python Deploy_sentinel.py --rules-dir ./Sentinel/Rules
+        run: python Deploy_sentinel.py --rules-dir ./Sentinel/Rules --dry-run
 
       - name: Login no Azure (OIDC)
         uses: azure/login@v2
@@ -66,8 +66,8 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Deploy das regras
-        run: python Deploy_sentinel.py --rules-dir ./Sentinel/Rules
-      
       - name: Verificar login
         run: az account show
+
+      - name: Deploy das regras
+        run: python Deploy_sentinel.py --rules-dir ./Sentinel/Rules
