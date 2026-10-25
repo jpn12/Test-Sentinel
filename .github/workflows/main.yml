@@ -68,3 +68,6 @@ jobs:
 
       - name: Deploy das regras
         run: python Deploy_sentinel.py --rules-dir ./Sentinel/Rules
+      
+      - name: Verificar login
+        run: az account show
