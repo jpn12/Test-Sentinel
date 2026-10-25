@@ -56,6 +56,53 @@ def to_iso_duration(value: str) -> str:
     return {"m": f"PT{n}M", "h": f"PT{n}H", "d": f"P{n}D"}[unit]
 
 
+GROUPING_METHODS = {
+    "allentities": "AllEntities",
+    "anyalert": "AnyAlert",
+    "selected": "Selected",
+}
+
+
+def build_incident_configuration(cfg: dict) -> dict:
+    """Converte incidentConfiguration do YAML para o formato da API.
+
+    createIncident: true/false  -> cria (ou não) incidente a partir dos alertas
+    groupingConfiguration       -> como os alertas são agrupados em incidentes
+    """
+    result = {"createIncident": bool(cfg.get("createIncident", True))}
+
+    grouping = cfg.get("groupingConfiguration")
+    if grouping:
+        method_raw = str(grouping.get("matchingMethod", "AllEntities"))
+        method = GROUPING_METHODS.get(method_raw.lower())
+        if not method:
+            raise ValueError(
+                f"matchingMethod inválido: '{method_raw}' "
+                f"(use AllEntities, AnyAlert ou Selected)"
+            )
+
+        group_by = {
+            k: grouping[k]
+            for k in ("groupByEntities", "groupByAlertDetails", "groupByCustomDetails")
+            if grouping.get(k)
+        }
+        if group_by and method != "Selected":
+            raise ValueError(
+                "groupByEntities/groupByAlertDetails/groupByCustomDetails "
+                "só valem com matchingMethod: Selected"
+            )
+
+        result["groupingConfiguration"] = {
+            "enabled": bool(grouping.get("enabled", False)),
+            "reopenClosedIncident": bool(grouping.get("reopenClosedIncident", False)),
+            "lookbackDuration": to_iso_duration(grouping.get("lookbackDuration", "5h")),
+            "matchingMethod": method,
+            **group_by,
+        }
+
+    return result
+
+
 def build_payload(rule: dict) -> dict:
     """Converte o YAML da regra para o body da API."""
     required = ["name", "severity", "query", "queryFrequency", "queryPeriod"]
@@ -101,7 +148,9 @@ def build_payload(rule: dict) -> dict:
     if rule.get("eventGroupingSettings"):
         props["eventGroupingSettings"] = rule["eventGroupingSettings"]
     if rule.get("incidentConfiguration"):
-        props["incidentConfiguration"] = rule["incidentConfiguration"]
+        props["incidentConfiguration"] = build_incident_configuration(
+            rule["incidentConfiguration"]
+        )
 
     return {"kind": "Scheduled", "properties": props}
 
