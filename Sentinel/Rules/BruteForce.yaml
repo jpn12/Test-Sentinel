@@ -1,0 +1,43 @@
+id: 6f1c2d3e-4a5b-4c6d-8e7f-9a0b1c2d3e4f
+name: Múltiplas falhas de login seguidas de sucesso
+description: |
+  Detecta usuário com muitas falhas de autenticação seguidas de um login bem-sucedido
+  a partir do mesmo IP, indicando possível brute force/password spray bem-sucedido.
+severity: High
+enabled: true
+requiredDataConnectors:
+  - connectorId: AzureActiveDirectory
+    dataTypes:
+      - SigninLogs
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - CredentialAccess
+relevantTechniques:
+  - T1110
+  - T1110.003
+query: |
+  let failures = SigninLogs
+  | where TimeGenerated > ago(1h)
+  | where ResultType !in ("0", "50125", "50140")
+  | summarize FailCount = count(), LastFail = max(TimeGenerated) by UserPrincipalName, IPAddress
+  | where FailCount >= 10;
+  SigninLogs
+  | where TimeGenerated > ago(1h)
+  | where ResultType == "0"
+  | join kind=inner failures on UserPrincipalName, IPAddress
+  | where TimeGenerated > LastFail
+  | project TimeGenerated, UserPrincipalName, IPAddress, FailCount, AppDisplayName
+entityMappings:
+  - entityType: Account
+    fieldMappings:
+      - identifier: FullName
+        columnName: UserPrincipalName
+  - entityType: IP
+    fieldMappings:
+      - identifier: Address
+        columnName: IPAddress
+eventGroupingSettings:
+  aggregationKind: AlertPerResult

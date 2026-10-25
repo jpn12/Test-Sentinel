@@ -4,13 +4,13 @@ on:
   pull_request:
     paths:
       - "Sentinel/rules/**"
-      - "deploy_sentinel_rules.py"
+      - "Deploy_sentinel.py"
       - "requirements.txt"
   push:
     branches: [main]
     paths:
       - "Sentinel/rules/**"
-      - "deploy_sentinel_rules.py"
+      - "Deploy_sentinel.py"
       - "requirements.txt"
   workflow_dispatch:
 
@@ -32,7 +32,7 @@ jobs:
       - run: pip install -r requirements.txt
 
       - name: Validar YAMLs
-        run: python deploy_sentinel_rules.py --rules-dir ./detections --dry-run
+        run: python Deploy_sentinel.py --rules-dir ./Sentinel/Rules --dry-run
 
   deploy:
     name: Deploy no Sentinel
@@ -57,7 +57,7 @@ jobs:
       - run: pip install -r requirements.txt
 
       - name: Validar YAMLs
-        run: python deploy_sentinel_rules.py --rules-dir ./detections --dry-run
+        run: python Deploy_sentinel.py --rules-dir ./Sentinel/Rules
 
       - name: Login no Azure (OIDC)
         uses: azure/login@v2
@@ -67,4 +67,4 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Deploy das regras
-        run: python deploy_sentinel_rules.py --rules-dir ./detections
+        run: python Deploy_sentinel.py --rules-dir ./Sentinel/Rules
