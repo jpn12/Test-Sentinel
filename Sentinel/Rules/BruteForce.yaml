@@ -40,4 +40,4 @@ entityMappings:
       - identifier: Address
         columnName: IPAddress
 eventGroupingSettings:
-  aggregationKind: AlertPerResult
+  aggregationKind: SingleAlert
