@@ -86,11 +86,11 @@ def build_incident_configuration(cfg: dict) -> dict:
             for k in ("groupByEntities", "groupByAlertDetails", "groupByCustomDetails")
             if grouping.get(k)
         }
-        if group_by and method != "Selected":
-            raise ValueError(
-                "groupByEntities/groupByAlertDetails/groupByCustomDetails "
-                "só valem com matchingMethod: Selected"
-            )
+###        if group_by and method != "Selected":
+##            raise ValueError(
+#                "groupByEntities/groupByAlertDetails/groupByCustomDetails "
+#                "só valem com matchingMethod: Selected"
+#            )
 
         result["groupingConfiguration"] = {
             "enabled": bool(grouping.get("enabled", False)),
