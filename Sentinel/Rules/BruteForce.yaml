@@ -44,7 +44,7 @@ eventGroupingSettings:
 incidentConfiguration:
   createIncident: true          # true = cria incidente | false = só gera o alerta
   groupingConfiguration:
-    enabled: false               # agrupar alertas relacionados em um único incidente
+    enabled: true               # agrupar alertas relacionados em um único incidente
     reopenClosedIncident: false # reabrir incidente fechado se surgir alerta relacionado
     lookbackDuration: PT5H        # janela de agrupamento (5m, 5h, 1d ou ISO 8601)
     matchingMethod: Selected    # AllEntities | AnyAlert | Selected
