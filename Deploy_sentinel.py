@@ -119,7 +119,7 @@ def build_payload(rule: dict) -> dict:
         "subTechniques": sub_techniques,
     }
 
-    # Campos opcionais repassados quase como estão
+    # Campos adicionais
     if rule.get("entityMappings"):
         props["entityMappings"] = rule["entityMappings"]
     if rule.get("customDetails"):
