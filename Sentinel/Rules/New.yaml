@@ -1,0 +1,50 @@
+name: Múltiplos login com sucesso
+description: |
+  Detecta usuário com muitas falhas de autenticação seguidas de um login bem-sucedido
+  a partir do mesmo IP, indicando possível brute force/password spray bem-sucedido.
+severity: High
+enabled: true
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - CredentialAccess
+relevantTechniques:
+  - T1110
+  - T1110.003
+query: |
+  let failures = SigninLogs
+  | where TimeGenerated > ago(1h)
+  | where ResultType !in ("0", "50125", "50140")
+  | summarize FailCount = count(), LastFail = max(TimeGenerated) by UserPrincipalName, IPAddress
+  | where FailCount >= 10;
+  SigninLogs
+  | where TimeGenerated > ago(1h)
+  | where ResultType == "0"
+  | join kind=inner failures on UserPrincipalName, IPAddress
+  | where TimeGenerated > LastFail
+  | project TimeGenerated, UserPrincipalName, IPAddress, FailCount, AppDisplayName
+entityMappings:
+  - entityType: Account
+    fieldMappings:
+      - identifier: FullName
+        columnName: UserPrincipalName
+  - entityType: IP
+    fieldMappings:
+      - identifier: Address
+        columnName: IPAddress
+eventGroupingSettings:          #Event Grouping
+  aggregationKind: SingleAlert  # SingleAlert  ou AlertPerResult
+incidentConfiguration:          # Incident Configuration
+  createIncident: true          # true = cria incidente | false = só gera o alerta
+  groupingConfiguration:        # Mapeamento de IncidentGrouping
+    enabled: false               # agrupar alertas relacionados em um único incidente
+    reopenClosedIncident: false # reabrir incidente fechado se surgir alerta relacionado
+    lookbackDuration: PT5H        # janela de agrupamento (PT5H = 5HRS)
+    matchingMethod: AllEntities    # AllEntities | AnyAlert | Selected
+    groupByAlertDetails:           # groupByAlertDetails(DisplayName/Severity), groupByEntities, groupByCustomDetails
+      - DisplayName
+
+
+### https://learn.microsoft.com/en-us/azure/templates/microsoft.securityinsights/alertrules?pivots=deployment-language-bicep
