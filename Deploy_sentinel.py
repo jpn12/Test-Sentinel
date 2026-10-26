@@ -12,7 +12,7 @@ import requests
 import yaml
 from azure.identity import DefaultAzureCredential
 
-API_VERSION = "2025-06-01"
+API_VERSION = "2025-07-01-preview"
 ARM = "https://management.azure.com"
 SCOPE = "https://management.azure.com/.default"
 
