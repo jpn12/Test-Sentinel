@@ -41,12 +41,12 @@ entityMappings:
         columnName: IPAddress
 eventGroupingSettings:
   aggregationKind: SingleAlert
-incidentConfiguration:
+incidentConfiguration:          # Incident Configuration
   createIncident: true          # true = cria incidente | false = só gera o alerta
   groupingConfiguration:
     enabled: true               # agrupar alertas relacionados em um único incidente
     reopenClosedIncident: false # reabrir incidente fechado se surgir alerta relacionado
     lookbackDuration: PT5H        # janela de agrupamento (5m, 5h, 1d ou ISO 8601)
     matchingMethod: AllEntities    # AllEntities | AnyAlert | Selected
-    groupByAlertDetails:            # só vale com matchingMethod: Selected
+    groupByAlertDetails:           # groupByAlertDetails(DisplayName/Severity), groupByEntities, groupByCustomDetails
       - DisplayName
