@@ -38,9 +38,9 @@ entityMappings:
 eventGroupingSettings:          #Event Grouping
   aggregationKind: SingleAlert  # SingleAlert  ou AlertPerResult
 incidentConfiguration:          # Incident Configuration
-  createIncident: true          # true = cria incidente | false = só gera o alerta
+  createIncident: false          # true = cria incidente | false = só gera o alerta
   groupingConfiguration:        # Mapeamento de IncidentGrouping
-    enabled: true               # agrupar alertas relacionados em um único incidente
+    enabled: false               # agrupar alertas relacionados em um único incidente
     reopenClosedIncident: false # reabrir incidente fechado se surgir alerta relacionado
     lookbackDuration: PT5H        # janela de agrupamento (PT5H = 5HRS)
     matchingMethod: AllEntities    # AllEntities | AnyAlert | Selected
