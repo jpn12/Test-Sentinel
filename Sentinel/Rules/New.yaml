@@ -1,4 +1,4 @@
-name: Múltiplos login com sucesso
+name: Login Suspeito
 description: |
   Detecta usuário com muitas falhas de autenticação seguidas de um login bem-sucedido
   a partir do mesmo IP, indicando possível brute force/password spray bem-sucedido.
