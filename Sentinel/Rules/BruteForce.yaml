@@ -4,11 +4,7 @@ description: |
   Detecta usuário com muitas falhas de autenticação seguidas de um login bem-sucedido
   a partir do mesmo IP, indicando possível brute force/password spray bem-sucedido.
 severity: High
-enabled: false
-requiredDataConnectors:
-  - connectorId: AzureActiveDirectory
-    dataTypes:
-      - SigninLogs
+enabled: true
 queryFrequency: 1h
 queryPeriod: 1h
 triggerOperator: gt
