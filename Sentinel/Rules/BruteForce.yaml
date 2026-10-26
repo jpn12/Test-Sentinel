@@ -14,7 +14,7 @@ tactics:
 relevantTechniques:
   - T1110
   - T1110.003
-  - T1110.004
+  - T1111
 query: |
   let failures = SigninLogs
   | where TimeGenerated > ago(1h)
