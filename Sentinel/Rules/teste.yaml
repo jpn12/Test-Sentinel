@@ -1,0 +1,22 @@
+$json = @'
+{
+  "kind": "Scheduled",
+  "properties": {
+    "displayName": "TESTE subtecnica (pode apagar)",
+    "description": "Regra de teste para verificar se a API guarda subTechniques",
+    "severity": "Low",
+    "enabled": false,
+    "query": "SigninLogs | take 1",
+    "queryFrequency": "PT1H",
+    "queryPeriod": "PT1H",
+    "triggerOperator": "GreaterThan",
+    "triggerThreshold": 0,
+    "suppressionEnabled": false,
+    "suppressionDuration": "PT1H",
+    "tactics": ["CredentialAccess"],
+    "techniques": ["T1110"],
+    "subTechniques": ["T1110.003"]
+  }
+}
+'@
+[System.IO.File]::WriteAllText("$PWD\test_subtechniques.json", $json)
