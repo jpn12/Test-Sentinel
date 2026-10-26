@@ -95,9 +95,9 @@ def build_payload(rule: dict) -> dict:
     if severity not in SEVERITIES:
         raise ValueError(f"Severity inválida: {rule['severity']}")
 
-    techniques, subTechniques = [], []
+    techniques, sub_techniques = [], []
     for t in rule.get("relevantTechniques", []) or []:
-        (subTechniques if "." in t else techniques).append(t)
+        (sub_techniques if "." in t else techniques).append(t)
         # garante que a técnica pai também esteja listada
         if "." in t and t.split(".")[0] not in techniques:
             techniques.append(t.split(".")[0])
