@@ -12,7 +12,7 @@ import requests
 import yaml
 from azure.identity import DefaultAzureCredential
 
-API_VERSION = os.environ.get("SENTINEL_API_VERSION", "2024-03-01")
+API_VERSION = "2024-03-01"
 ARM = "https://management.azure.com"
 SCOPE = "https://management.azure.com/.default"
 
@@ -96,11 +96,13 @@ def build_payload(rule: dict) -> dict:
         raise ValueError(f"Severity inválida: {rule['severity']}")
 
     techniques, sub_techniques = [], []
-    for t in rule.get("relevantTechniques", []) or []:
-        (sub_techniques if "." in t else techniques).append(t)
-        # garante que a técnica pai também esteja listada
-        if "." in t and t.split(".")[0] not in techniques:
-            techniques.append(t.split(".")[0])
+    for raw in rule.get("relevantTechniques", []) or []:
+        t = str(raw).strip().upper()
+        parent = t.split(".")[0]
+        if parent not in techniques:
+            techniques.append(parent)
+        if "." in t and t not in sub_techniques:
+            sub_techniques.append(t)
 
     props = {
         "displayName": rule["name"],
