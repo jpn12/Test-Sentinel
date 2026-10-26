@@ -3,7 +3,7 @@ description: |
   Detecta usuário com muitas falhas de autenticação seguidas de um login bem-sucedido
   a partir do mesmo IP, indicando possível brute force/password spray bem-sucedido.
 severity: High
-enabled: false
+enabled: true
 queryFrequency: 1h
 queryPeriod: 1h
 triggerOperator: gt
@@ -39,7 +39,7 @@ eventGroupingSettings:          #Event Grouping
 incidentConfiguration:          # Incident Configuration
   createIncident: true          # true = cria incidente | false = só gera o alerta
   groupingConfiguration:        # Mapeamento de IncidentGrouping
-    enabled: false               # agrupar alertas relacionados em um único incidente
+    enabled: true               # agrupar alertas relacionados em um único incidente
     reopenClosedIncident: false # reabrir incidente fechado se surgir alerta relacionado
     lookbackDuration: PT5H        # janela de agrupamento (PT5H = 5HRS)
     matchingMethod: AllEntities    # AllEntities | AnyAlert | Selected
