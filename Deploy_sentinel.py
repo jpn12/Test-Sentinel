@@ -1,23 +1,4 @@
 #!/usr/bin/env python3
-"""
-Deploy de regras de detecção (Detection as Code) para o Microsoft Sentinel.
-
-- Lê arquivos YAML (formato do repositório Azure/Azure-Sentinel) de um diretório
-- Converte para o payload da API de Analytics Rules (Scheduled)
-- Faz PUT idempotente usando o id da regra (GUID)
-
-Variáveis de ambiente:
-  AZURE_TENANT_ID, AZURE_CLIENT_ID, AZURE_CLIENT_SECRET   (Service Principal)
-  SENTINEL_SUBSCRIPTION_ID, SENTINEL_RESOURCE_GROUP, SENTINEL_WORKSPACE_NAME
-
-Permissão necessária para o Service Principal no workspace/RG:
-  "Microsoft Sentinel Contributor"
-
-Uso:
-  pip install azure-identity requests pyyaml
-  python deploy_sentinel_rules.py --rules-dir ./detections --dry-run
-  python deploy_sentinel_rules.py --rules-dir ./detections
-"""
 
 import argparse
 import os
