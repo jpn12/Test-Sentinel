@@ -46,3 +46,6 @@ incidentConfiguration:          # Incident Configuration
     matchingMethod: AllEntities    # AllEntities | AnyAlert | Selected
     groupByAlertDetails:           # groupByAlertDetails(DisplayName/Severity), groupByEntities, groupByCustomDetails
       - DisplayName
+
+
+### https://learn.microsoft.com/en-us/azure/templates/microsoft.securityinsights/alertrules?pivots=deployment-language-bicep
