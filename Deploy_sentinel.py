@@ -95,6 +95,13 @@ def build_payload(rule: dict) -> dict:
     if severity not in SEVERITIES:
         raise ValueError(f"Severity inválida: {rule['severity']}")
 
+    techniques, sub_techniques = [], []
+    for t in rule.get("relevantTechniques", []) or []:
+        (sub_techniques if "." in t else techniques).append(t)
+        # garante que a técnica pai também esteja listada
+        if "." in t and t.split(".")[0] not in techniques:
+            techniques.append(t.split(".")[0])
+
     props = {
         "displayName": rule["name"],
         "description": (rule.get("description") or "").strip(),
@@ -111,13 +118,6 @@ def build_payload(rule: dict) -> dict:
         "techniques": techniques,
         "subTechniques": sub_techniques,
     }
-
-    techniques, sub_techniques = [], []
-    for t in rule.get("relevantTechniques", []) or []:
-        (sub_techniques if "." in t else techniques).append(t)
-        # garante que a técnica pai também esteja listada
-        if "." in t and t.split(".")[0] not in techniques:
-            techniques.append(t.split(".")[0])
 
     # Campos opcionais repassados quase como estão
     if rule.get("entityMappings"):
