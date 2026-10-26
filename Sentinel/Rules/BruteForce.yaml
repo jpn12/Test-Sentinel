@@ -4,7 +4,7 @@ description: |
   Detecta usuário com muitas falhas de autenticação seguidas de um login bem-sucedido
   a partir do mesmo IP, indicando possível brute force/password spray bem-sucedido.
 severity: High
-enabled: false
+enabled: true
 queryFrequency: 1h
 queryPeriod: 1h
 triggerOperator: gt
@@ -14,7 +14,6 @@ tactics:
 relevantTechniques:
   - T1110
   - T1110.003
-  - T1110.004
 query: |
   let failures = SigninLogs
   | where TimeGenerated > ago(1h)
@@ -39,7 +38,7 @@ entityMappings:
 eventGroupingSettings:          #Event Grouping
   aggregationKind: SingleAlert  # SingleAlert  ou AlertPerResult
 incidentConfiguration:          # Incident Configuration
-  createIncident: false          # true = cria incidente | false = só gera o alerta
+  createIncident: true          # true = cria incidente | false = só gera o alerta
   groupingConfiguration:        # Mapeamento de IncidentGrouping
     enabled: false               # agrupar alertas relacionados em um único incidente
     reopenClosedIncident: false # reabrir incidente fechado se surgir alerta relacionado
